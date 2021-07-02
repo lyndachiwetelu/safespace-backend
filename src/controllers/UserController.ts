@@ -9,7 +9,8 @@ export default class BaseController
     }
 
     public static async createUser(req:Request, res:Response) {
-        return res.status(201).json(await userService.createUser(req.body));
+        const {token, ...user} = await userService.createUser(req.body)
+        return res.status(201).cookie('access_token', token, { maxAge:  2 * 60 * 60 * 1000, httpOnly: true }).json(user);
     }
 
 }
