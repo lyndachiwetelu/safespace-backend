@@ -10,13 +10,39 @@ export const SignupUserSchema = Joi.object({
         .pattern(new RegExp('^(?=[A-Za-z0-9@%&#!.<>?]{6,30}$)(?=.*\d)(?=.*[A-Za-z]).*$'))
         .required(),
 
-    age: Joi.number()
-        .integer()
-        .min(18)
-        .max(200),
-
     email: Joi.string()
-    .email({ minDomainSegments: 2 })
-    .required()
+        .email({ minDomainSegments: 2 })
+        .required(),
+
+    settings: Joi.object().keys(
+        {
+            age: Joi.number()
+                .integer()
+                .min(18)
+                .max(200)
+                .required(),
+            
+            hasHadTherapy: Joi.bool()
+                            .required(),
+        
+            ailments: Joi.array()
+                    .items(Joi.string())
+                    .min(1)
+                    .max(10)
+                    .required(),
+        
+            religiousTherapy: Joi.string()
+                .required(),
+        
+            media: Joi.array()
+                .items(Joi.string())
+                .min(1)
+                .max(3)
+                .required(),
+        
+            couplesTherapy: Joi.bool()
+                            .required(),
+        }
+    ).required() 
     
 })

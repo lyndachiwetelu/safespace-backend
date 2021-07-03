@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express, { Application } from "express";
 import { sequelize } from "./database";
+import cookieParser from 'cookie-parser'
 import UserRouter from "./routes/UserRouter"
 
 // initialize configuration
@@ -9,6 +10,7 @@ const port: string | number = process.env.SERVER_PORT || 8000;
 const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
 
+app.use(cookieParser())
 app.use(express.json())
 app.use('/api/v1/users', UserRouter);
 

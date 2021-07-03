@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv'
 import config from './config/config'
 dotenv.config(); 
 
-
 const env: string = process.env.ENVIRONMENT || 'development'
 const connectionConfig = config[env]
 
@@ -33,8 +32,9 @@ export type Migration = typeof umzug._types.migration;
       await umzug.up();
     }
     else if (direction === '--down'){
-      await umzug.down();
-    } else {
+      await umzug.down({ to: 0 });
+    }
+    else {
       console.log('pass --up or --down to "yarn migrate"')
     }
 })();
