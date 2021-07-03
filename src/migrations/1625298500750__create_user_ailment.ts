@@ -20,6 +20,12 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
 			type: DataTypes.STRING(60),
 			allowNull: false
 		},
+    }, {
+        uniqueKeys: {
+            unique_ailments: {
+                fields: ['userId', 'ailmentKey']
+            }
+        }
     })
 }
 

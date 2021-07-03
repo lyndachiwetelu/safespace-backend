@@ -8,6 +8,9 @@ const env: string = process.env.ENVIRONMENT || 'development'
 const connectionConfig = config[env]
 
 const direction = process.argv[2]
+const migrationType = process.argv[3]
+
+const path: string = migrationType === '--seed' ? 'src/seeders/*.ts' : 'src/migrations/*.ts'
 
 const sequelize = new Sequelize({  
     database: connectionConfig.database,
@@ -17,7 +20,7 @@ const sequelize = new Sequelize({
 });
 
 const umzug = new Umzug({
-  migrations: { glob: 'src/migrations/*.ts' },
+  migrations: { glob: path },
   context: sequelize.getQueryInterface(),
   storage: new SequelizeStorage({ sequelize }),
   logger: console,

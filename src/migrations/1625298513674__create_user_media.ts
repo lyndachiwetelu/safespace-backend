@@ -20,6 +20,12 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
 			type: DataTypes.STRING(20),
 			allowNull: false
 		},
+    }, {
+        uniqueKeys: {
+            unique_media: {
+                fields: ['userId', 'mediaKey']
+            }
+        }
     })
 }
 

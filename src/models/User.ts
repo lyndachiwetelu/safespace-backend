@@ -14,6 +14,9 @@ export default class User extends Model {
     @Column
     password!: string
 
+    @Column
+    userType!: 'therapist' | 'patient'
+
     @BeforeCreate
     public static hashPassword(instance: User) {
       const salt = bcrypt.genSaltSync();

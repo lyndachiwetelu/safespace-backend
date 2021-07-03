@@ -19,6 +19,8 @@ export default class UserService
     userMediaModel: typeof UserMedia
     userAilmentModel: typeof UserAilment
 
+    PATIENT_TYPE = 'patient'
+
     public constructor() {
         this.userModel = UserModel
         this.userSettingModel = UserSetting
@@ -49,7 +51,7 @@ export default class UserService
         const settings = userDetails.settings
         const {media, ...otherSettings} = settings
         const {ailments, ...userSettings} = otherSettings
-        let user = this.userModel.build(userDetails)
+        let user = this.userModel.build({userType:this.PATIENT_TYPE, ...userDetails})
         try {
             user = await user.save()
             user = user.toJSON()
