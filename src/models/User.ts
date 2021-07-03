@@ -21,7 +21,7 @@ export default class User extends Model {
     }
   
     public validPassword = (password:string) => {
-      return bcrypt.compareSync(password, this.password);
+      return bcrypt.compareSync(password, this.get('password'));
     }
 
     public toJSON() {
