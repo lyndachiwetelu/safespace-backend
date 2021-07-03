@@ -31,7 +31,11 @@ export default class UserService
 
     public async getAllUsers() {
         const users = await this.userModel.findAll()
-        const usersJson = users.map(user => user.toJSON())
+        const usersJson = users.map(user => {
+           const userJson = user.toJSON()
+           const {password, updatedAt, ...otherUserDetails} = userJson
+           return otherUserDetails
+        })
         return usersJson
     }
 
@@ -42,16 +46,17 @@ export default class UserService
         let user = this.userModel.build(userDetails)
         user = await user.save()
         user = user.toJSON()
+        const {password, ...userData} = user
         
-        const savedSettings = await this.userSettingModel.create({userId: user.id, ...userSettings})
+        const savedSettings = await this.userSettingModel.create({userId: userData.id, ...userSettings})
         const {id, userId, ...settingsToReturn} = savedSettings.toJSON()
-        const savedMedia = this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : user.id})))
-        const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map(ailment => ({ ailmentKey: ailment, userId : user.id})))
+        const savedMedia = this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : userData.id})))
+        const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map(ailment => ({ ailmentKey: ailment, userId : userData.id})))
 
-        const token = this.generateAccessToken(user.id)
+        const token = this.generateAccessToken(userData.id)
         return {
             token, 
-            ...user, 
+            ...userData, 
             settings: {
                  media: (await savedMedia).map(medium => {
                      medium = medium.toJSON()
@@ -66,8 +71,30 @@ export default class UserService
         }
     }
 
-    public async userWithEmailExists(email: string): Promise<boolean> {
+    public async userExists(email: string, password:string = ''): Promise<any | boolean> {
         const  userExists = await this.userModel.findOne({ where : {email} })
-        return userExists === null ? false : true
+        if (userExists) {
+            if (password !== '') {
+                const isAMatch = userExists.validPassword(password)
+                if (!isAMatch) {
+                    return false
+                }
+            }
+
+            return userExists
+        }
+        return false
+    }
+
+    public async loginUser({email, password} : {email: string, password:string}): Promise<any> {
+        const user = await this.userExists(email, password)
+        if (user !== false) {
+            const {id, password, updatedAt, ...userData} = user.toJSON()
+            const token = this.generateAccessToken(userData.id)
+            
+            return {token, userData}
+        }
+
+        return null
     }
 }

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { LoginUserSchema } from "../validation/schema/loginUser";
 import { SignupUserSchema } from "../validation/schema/signupUser";
 
 export const validateSignup = (req: Request, res: Response, next: NextFunction) => {
@@ -14,6 +15,16 @@ export const validateSignup = (req: Request, res: Response, next: NextFunction) 
     next()
 }
 
-export const validateLogin = (req: Request, res: Response) => {
+export const validateLogin = (req: Request, res: Response, next: NextFunction) => {
+    const { error } = LoginUserSchema.validate(req.body, {abortEarly: false})
+    if (error) {
+        const messages = error.details.map(detail => detail.message)
+        return res.status(400).send({
+            status: 400,
+            messages
+          });
+    }
+
+    next()
 
 }
