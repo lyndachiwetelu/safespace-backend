@@ -1,11 +1,12 @@
 import UserModel from '../models/User'
-import { CreateUser, UserResponse } from '../types/UserRequest'
+import { CreateUser } from '../types/UserRequest'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import UserSetting from '../models/UserSetting'
 import UserMedia from '../models/UserMedia'
 import UserAilment from '../models/UserAilment'
 import { getAilmentName, getMediaName } from '../dataProvider'
+import { ErrorHandler } from '../error'
 
 const tokenSecret: string = process.env.TOKEN_SECRET || 'NOT_SECURE'
 
@@ -30,13 +31,18 @@ export default class UserService
     }
 
     public async getAllUsers() {
-        const users = await this.userModel.findAll()
-        const usersJson = users.map(user => {
-           const userJson = user.toJSON()
-           const {password, updatedAt, ...otherUserDetails} = userJson
-           return otherUserDetails
+        try {
+            const users = await this.userModel.findAll()
+            const usersJson = users.map(user => {
+            const userJson = user.toJSON()
+            const {password, updatedAt, ...otherUserDetails} = userJson
+            return otherUserDetails
         })
-        return usersJson
+
+            return usersJson
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
+        }
     }
 
     public async createUser(userDetails: CreateUser): Promise<any> {
@@ -44,57 +50,74 @@ export default class UserService
         const {media, ...otherSettings} = settings
         const {ailments, ...userSettings} = otherSettings
         let user = this.userModel.build(userDetails)
-        user = await user.save()
-        user = user.toJSON()
-        const {password, ...userData} = user
-        
-        const savedSettings = await this.userSettingModel.create({userId: userData.id, ...userSettings})
-        const {id, userId, ...settingsToReturn} = savedSettings.toJSON()
-        const savedMedia = this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : userData.id})))
-        const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map(ailment => ({ ailmentKey: ailment, userId : userData.id})))
+        try {
+            user = await user.save()
+            user = user.toJSON()
+            const {password, ...userData} = user
+            
+            const savedSettings = await this.userSettingModel.create({userId: userData.id, ...userSettings})
+            const {id, userId, ...settingsToReturn} = savedSettings.toJSON()
+            const savedMedia = this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : userData.id})))
+            const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map(ailment => ({ ailmentKey: ailment, userId : userData.id})))
+            const token = this.generateAccessToken(userData.id)
 
-        const token = this.generateAccessToken(userData.id)
-        return {
-            token, 
-            ...userData, 
-            settings: {
-                 media: (await savedMedia).map(medium => {
-                     medium = medium.toJSON()
-                     return {mediaKey:medium.mediaKey, name: getMediaName(medium.mediaKey)}
-                    }),
-                  ailments: savedAilments.map(ailment => {
-                      ailment = ailment.toJSON()
-                      return {ailmentKey:ailment.ailmentKey, name: getAilmentName(ailment.ailmentKey)}
-                    }), 
-                  ...settingsToReturn
-            }
-        }
-    }
-
-    public async userExists(email: string, password:string = ''): Promise<any | boolean> {
-        const  userExists = await this.userModel.findOne({ where : {email} })
-        if (userExists) {
-            if (password !== '') {
-                const isAMatch = userExists.validPassword(password)
-                if (!isAMatch) {
-                    return false
+            return {
+                token, 
+                ...userData, 
+                settings: {
+                     media: (await savedMedia).map(medium => {
+                         medium = medium.toJSON()
+                         return {mediaKey:medium.mediaKey, name: getMediaName(medium.mediaKey)}
+                        }),
+                      ailments: savedAilments.map(ailment => {
+                          ailment = ailment.toJSON()
+                          return {ailmentKey:ailment.ailmentKey, name: getAilmentName(ailment.ailmentKey)}
+                        }), 
+                      ...settingsToReturn
                 }
             }
 
-            return userExists
+
+        } catch(err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
         }
-        return false
+        
+    }
+
+    public async userExists(email: string, password:string = ''): Promise<any | boolean> {
+        try {
+            const  userExists = await this.userModel.findOne({ where : {email} })
+            if (userExists) {
+                if (password !== '') {
+                    const isAMatch = userExists.validPassword(password)
+                    if (!isAMatch) {
+                        return false
+                    }
+                }
+
+                return userExists
+            }
+
+            return false
+        } catch(err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
+        }
+        
     }
 
     public async loginUser({email, password} : {email: string, password:string}): Promise<any> {
-        const user = await this.userExists(email, password)
-        if (user !== false) {
-            const {id, password, updatedAt, ...userData} = user.toJSON()
-            const token = this.generateAccessToken(userData.id)
-            
-            return {token, userData}
-        }
-
-        return null
+        try {
+            const user = await this.userExists(email, password)
+            if (user !== false) {
+                const {id, password, updatedAt, ...userData} = user.toJSON()
+                const token = this.generateAccessToken(userData.id)
+                
+                return {token, userData}
+            }
+    
+            return null
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
+        } 
     }
 }

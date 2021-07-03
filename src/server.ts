@@ -1,8 +1,10 @@
 import dotenv from "dotenv";
-import express, { Application } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import { sequelize } from "./database";
 import cookieParser from 'cookie-parser'
 import UserRouter from "./routes/UserRouter"
+import { ErrorHandler, handleError } from "./error";
+import { exit } from "process";
 
 // initialize configuration
 dotenv.config();
@@ -13,6 +15,10 @@ const app: Application = express();
 app.use(cookieParser())
 app.use(express.json())
 app.use('/api/v1/users', UserRouter);
+
+app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
+  handleError(err, res);
+});
 
 (async () => {
   try {
