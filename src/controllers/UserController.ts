@@ -9,6 +9,9 @@ export default class BaseController
     }
 
     public static async createUser(req:Request, res:Response) {
+        if (await userService.userWithEmailExists(req.body.email) === true) {
+            return res.status(409).json({status: 409, message: 'User  with email exists!'})
+        }
         const {token, ...user} = await userService.createUser(req.body)
         return res.status(201).cookie('access_token', token, { maxAge:  2 * 60 * 60 * 1000, httpOnly: true }).json(user);
     }

@@ -1,4 +1,5 @@
-import { Table, Column, Model } from 'sequelize-typescript'
+import { Table, Column, BeforeCreate, Model } from 'sequelize-typescript'
+import bcrypt from 'bcrypt'
 
 @Table({
     modelName: '"User"'
@@ -12,6 +13,16 @@ export default class User extends Model {
 
     @Column
     password!: string
+
+    @BeforeCreate
+    public static hashPassword(instance: User) {
+      const salt = bcrypt.genSaltSync();
+      instance.set('password', bcrypt.hashSync(instance.get('password'), salt));
+    }
+  
+    public validPassword = (password:string) => {
+      return bcrypt.compareSync(password, this.password);
+    }
 
     public toJSON() {
         return this.get({plain:true})
