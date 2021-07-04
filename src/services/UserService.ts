@@ -8,9 +8,9 @@ import UserAilment from '../models/UserAilment'
 import { getAilmentName, getMediaName } from '../dataProvider'
 import { ErrorHandler } from '../error'
 
-const tokenSecret: string = process.env.TOKEN_SECRET || 'NOT_SECURE'
-
 dotenv.config()
+
+const tokenSecret: string = process.env.TOKEN_SECRET || 'NOT_SECURE'
 
 export default class UserService 
 {
@@ -122,4 +122,5 @@ export default class UserService
             throw new ErrorHandler(500, 'Internal Server Error')
         } 
     }
+
 }

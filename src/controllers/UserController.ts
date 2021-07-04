@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import UserService from "../services/UserService";
 const userService = new UserService();
 
-export default class BaseController
+export default class UserController
 {
     public static async getUsers(req:Request, res:Response, next:NextFunction): Promise<Response | void > {
         try {

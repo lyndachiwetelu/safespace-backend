@@ -1,4 +1,4 @@
-import { Table, Column, ForeignKey, Model} from 'sequelize-typescript'
+import { Table, Column, ForeignKey, Model, BelongsTo} from 'sequelize-typescript'
 import User from './User'
 
 @Table({
@@ -12,6 +12,9 @@ export default class UserAilment extends Model {
 
     @Column
     ailmentKey!: string
+
+    @BelongsTo(() => User)
+    user!: User
 
     public toJSON() {
         return this.get({plain:true})

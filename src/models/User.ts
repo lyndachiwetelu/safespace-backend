@@ -1,5 +1,9 @@
-import { Table, Column, BeforeCreate, Model } from 'sequelize-typescript'
+import { Table, Column, BeforeCreate, Model, HasMany, HasOne } from 'sequelize-typescript'
 import bcrypt from 'bcrypt'
+import UserAilment from './UserAilment'
+import UserMedia from './UserMedia'
+import UserSetting from './UserSetting'
+import TherapySetting from './TherapistSetting'
 
 @Table({
     modelName: '"User"'
@@ -16,6 +20,19 @@ export default class User extends Model {
 
     @Column
     userType!: 'therapist' | 'patient'
+
+    @HasMany(() => UserAilment)
+    ailments!: UserAilment[]
+
+    @HasMany(() => UserMedia)
+    media!: UserMedia[]
+
+    @HasOne(() => UserSetting)
+    userSetting!: UserSetting
+
+    @HasOne(() => TherapySetting)
+    therapistSetting!: TherapySetting
+
 
     @BeforeCreate
     public static hashPassword(instance: User) {
