@@ -86,9 +86,15 @@ export default class UserService
         
     }
 
-    public async userExists(email: string, password:string = ''): Promise<any | boolean> {
+    public async userExists(email: string, password:string = '', id:any = null): Promise<any | boolean> {
         try {
-            const  userExists = await this.userModel.findOne({ where : {email} })
+            let criteria = {}
+            if (id !== null) {
+                criteria = {id: parseInt(id)}
+            } else {
+                criteria = {email}
+            }
+            const  userExists = await this.userModel.findOne({ where : criteria })
             if (userExists) {
                 if (password !== '') {
                     const isAMatch = userExists.validPassword(password)
