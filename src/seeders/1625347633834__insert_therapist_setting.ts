@@ -11,8 +11,9 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '30',
             pricePerSession: 120,
             religiousTherapy: 'christian',
+            couplesTherapy: true,
             summary: 'At every tiled on ye defer do. No attention suspected oh difficult. Fond his say old meet cold find come whom. The sir park sake bred. Wonder matter now can estate esteem assure fat roused. Am performed on existence as discourse is. Pleasure friendly at marriage blessing or. ',
-            imageUrl: 'https://images.unsplash.com/photo-1557296387-5358ad7997bb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
+            imageUrl: 'https://images.unsplash.com/photo-1557296387-5358ad7997bb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
         },
         {
             userId: 5010,
@@ -22,6 +23,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 120,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her.',
             imageUrl: 'https://images.unsplash.com/photo-1558507652-2d9626c4e67a?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
         },
@@ -33,6 +35,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 100,
             religiousTherapy: 'muslim',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1601582589907-f92af5ed9db8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -44,6 +47,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 120,
             religiousTherapy: 'buddhist',
+            couplesTherapy: false,
             summary: 'Husbands ask repeated resolved but laughter debating. She end cordial visitor noisier fat subject general picture. Or if offering confined entrance no. Nay rapturous him see something residence. Highly talked do so vulgar. Her use behaved spirits and natural attempt say feeling. Exquisite mr incommode immediate he something ourselves it of. Law conduct yet chiefly beloved examine village proceed.',
             imageUrl: 'https://images.unsplash.com/photo-1535579710123-3c0f261c474e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -55,6 +59,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '30',
             pricePerSession: 120,
             religiousTherapy: 'buddhist',
+            couplesTherapy: false,
             summary: 'Now for manners use has company believe parlors. Least nor party who wrote while did. Excuse formed as is agreed admire so on result parish. Put use set uncommonly announcing and travelling. Allowance sweetness direction to as necessary. Principle oh explained excellent do my suspected conveying in. Excellent you did therefore perfectly supposing described.',
             imageUrl: 'https://images.unsplash.com/photo-1527082395-e939b847da0d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
          },
@@ -66,6 +71,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 150,
             religiousTherapy: 'muslim',
+            couplesTherapy: false,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1530785602389-07594beb8b73?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -77,6 +83,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 80,
             religiousTherapy: 'christian',
+            couplesTherapy: false,
             summary: 'Wrote water woman of heart it total other. By in entirely securing suitable graceful at families improved. Zealously few furniture repulsive was agreeable consisted difficult. Collected breakfast estimable questions in to favourite it. Known he place worth words it as to. Spoke now noise off smart her ready. ',
             imageUrl: 'https://images.unsplash.com/photo-1521038199265-bc482db0f923?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8cG9ydHJhaXRzfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',
         },
@@ -88,6 +95,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 100,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHBvcnRyYWl0c3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -198,6 +206,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '30',
             pricePerSession: 100,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1614805380833-62f701bb74ff?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzF8fHBvcnRyYWl0c3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -220,6 +229,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 140,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1606122017369-d782bbb78f32?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjl8fHBvcnRyYWl0c3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -253,6 +263,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 120,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1508216404415-a35220fab80e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDR8fHBvcnRyYWl0c3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -275,6 +286,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 100,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1621169806978-d997e4a587fb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDZ8fHBvcnRyYWl0c3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },
@@ -286,6 +298,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
             timePerSession: '60',
             pricePerSession: 120,
             religiousTherapy: 'none',
+            couplesTherapy: true,
             summary: 'Resolution possession discovered surrounded advantages has but few add. Yet walls times spoil put. Be it reserved contempt rendered smallest. Studied to passage it mention calling believe an. Get ten horrible remember pleasure two vicinity. Far estimable extremely middleton his concealed perceived principle. Any nay pleasure entrance prepared her. ',
             imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nzl8fHBvcnRyYWl0c3xlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
         },

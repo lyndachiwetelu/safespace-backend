@@ -37,6 +37,7 @@ export default class TherapistService
                     ageTo: {
                         [Op.gte]: [userSettings?.toJSON().age]
                     },
+                    couplesTherapy: userSettings?.toJSON().couplesTherapy,
                     religiousTherapy: userSettings?.toJSON().religiousTherapy
                 } }, {
                     model: UserMedia,

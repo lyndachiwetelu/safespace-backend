@@ -41,6 +41,10 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
 			type: DataTypes.ENUM('none', 'muslim', 'christian', 'hindu', 'buddhist'),
 			allowNull: false
 		},
+        couplesTherapy: {
+			type: DataTypes.BOOLEAN,
+            defaultValue: false,
+		},
         summary: {
 			type: DataTypes.TEXT,
 			allowNull: false

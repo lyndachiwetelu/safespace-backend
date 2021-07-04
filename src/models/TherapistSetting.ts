@@ -28,6 +28,9 @@ export default class TherapySetting extends Model {
     @Column
     religiousTherapy!: 'none' | 'muslim' |'christian' |'hindu' | 'buddhist'
 
+    @Column
+    couplesTherapy!: boolean
+
 
     @Column
     summary!: string
