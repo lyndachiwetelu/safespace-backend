@@ -61,7 +61,13 @@ export default class TherapistService
                 } 
             });
     
-            return therapists.map(therapist => therapist.toJSON())
+            return therapists.map(therapist => {
+                const therapistJson = therapist.toJSON()
+                const { email, password, createdAt, updatedAt, media, ailments, ...otherTherapistDetails } = therapistJson
+                const {id, userId, ...otherSettings} = otherTherapistDetails.therapistSetting
+                otherTherapistDetails.therapistSetting = otherSettings
+                return otherTherapistDetails
+            })
 
         } catch (err) {
             return new ErrorHandler(500, 'Internal Server Error')
