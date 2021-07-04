@@ -8,9 +8,9 @@ import UserAilment from '../models/UserAilment'
 import { getAilmentName, getMediaName } from '../dataProvider'
 import { ErrorHandler } from '../error'
 
-const tokenSecret: string = process.env.TOKEN_SECRET || 'NOT_SECURE'
-
 dotenv.config()
+
+const tokenSecret: string = process.env.TOKEN_SECRET || 'NOT_SECURE'
 
 export default class UserService 
 {
@@ -18,6 +18,8 @@ export default class UserService
     protected userSettingModel: typeof UserSetting
     userMediaModel: typeof UserMedia
     userAilmentModel: typeof UserAilment
+
+    PATIENT_TYPE = 'patient'
 
     public constructor() {
         this.userModel = UserModel
@@ -49,7 +51,7 @@ export default class UserService
         const settings = userDetails.settings
         const {media, ...otherSettings} = settings
         const {ailments, ...userSettings} = otherSettings
-        let user = this.userModel.build(userDetails)
+        let user = this.userModel.build({userType:this.PATIENT_TYPE, ...userDetails})
         try {
             user = await user.save()
             user = user.toJSON()
@@ -84,9 +86,15 @@ export default class UserService
         
     }
 
-    public async userExists(email: string, password:string = ''): Promise<any | boolean> {
+    public async userExists(email: string, password:string = '', id:any = null): Promise<any | boolean> {
         try {
-            const  userExists = await this.userModel.findOne({ where : {email} })
+            let criteria = {}
+            if (id !== null) {
+                criteria = {id: parseInt(id)}
+            } else {
+                criteria = {email}
+            }
+            const  userExists = await this.userModel.findOne({ where : criteria })
             if (userExists) {
                 if (password !== '') {
                     const isAMatch = userExists.validPassword(password)
@@ -120,4 +128,5 @@ export default class UserService
             throw new ErrorHandler(500, 'Internal Server Error')
         } 
     }
+
 }

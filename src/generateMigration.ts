@@ -1,9 +1,9 @@
 import fs from 'fs'
 
-const generateMigrationFile = (name: string, action: string) => {
+const generateMigrationFile = (name: string, action: string, path:string) => {
     const fileName = `${Date.now()}__${action}_${name}.ts`
     const migrationTemplate = fs.readFileSync('src/templates/migration.ts');
-    fs.appendFile(`src/migrations/${fileName}`, migrationTemplate, function (err) {
+    fs.appendFile(`${path}${fileName}`, migrationTemplate, function (err) {
       if (err) { 
         throw err;
       }
@@ -13,9 +13,12 @@ const generateMigrationFile = (name: string, action: string) => {
 
 const name = process.argv[2]
 const action = process.argv[3]
+const migrationType = process.argv[4]
 
 if (!name || !action) {
-    console.log('USAGE:  yarn generate-migration modelName Action')
+    console.log('USAGE:  yarn generate-migration modelName Action [--seed]')
 }
 
-generateMigrationFile(name.toLowerCase(), action.toLowerCase())
+const path = migrationType === '--seed' ? 'src/seeders/' : 'src/migrations/'
+
+generateMigrationFile(name.toLowerCase(), action.toLowerCase(), path)

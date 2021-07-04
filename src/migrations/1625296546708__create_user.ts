@@ -11,7 +11,7 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
 		},
 		name: {
 			type: DataTypes.STRING,
-			allowNull: false
+			allowNull: true
 		},
         email: {
 			type: DataTypes.STRING,
@@ -20,6 +20,10 @@ const up: Migration = async ({context} : { context: QueryInterface}) => {
 		},
         password: {
 			type: DataTypes.STRING,
+			allowNull: false
+		},
+        userType: {
+			type: DataTypes.ENUM('therapist', 'patient'),
 			allowNull: false
 		},
 		createdAt: {

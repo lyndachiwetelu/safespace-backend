@@ -2,25 +2,41 @@ import { Table, Column, ForeignKey, Model, BelongsTo } from 'sequelize-typescrip
 import User from './User'
 
 @Table({
-    modelName: '"User_Setting"',
+    modelName: '"Therapist_Setting"',
     timestamps: false,
 })
-export default class UserSetting extends Model {
+export default class TherapySetting extends Model {
     @ForeignKey(() => User)
     @Column
     userId!: number
 
     @Column
-    age!: number
+    ageFrom!: number
 
     @Column
-    hasHadTherapy!: boolean
+    ageTo!: number
+
+    @Column
+    qualifications!: string
+
+    @Column
+    timePerSession!: '30' | '60'
+
+    @Column
+    pricePerSession!: number
 
     @Column
     religiousTherapy!: 'none' | 'muslim' |'christian' |'hindu' | 'buddhist'
 
     @Column
     couplesTherapy!: boolean
+
+
+    @Column
+    summary!: string
+
+    @Column
+    imageUrl!: string
 
     @BelongsTo(() => User)
     user!: User
