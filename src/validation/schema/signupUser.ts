@@ -7,7 +7,8 @@ export const SignupUserSchema = Joi.object({
         .required(),
 
     password: Joi.string()
-        .pattern(new RegExp('^(?=[A-Za-z0-9@%&#!.<>?]{6,30}$)(?=.*\d)(?=.*[A-Za-z]).*$'))
+        .min(6)
+        .max(60)
         .required(),
 
     email: Joi.string()
