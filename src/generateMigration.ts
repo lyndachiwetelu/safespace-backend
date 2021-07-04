@@ -16,7 +16,7 @@ const action = process.argv[3]
 const migrationType = process.argv[4]
 
 if (!name || !action) {
-    console.log('USAGE:  yarn generate-migration modelName Action')
+    console.log('USAGE:  yarn generate-migration modelName Action [--seed]')
 }
 
 const path = migrationType === '--seed' ? 'src/seeders/' : 'src/migrations/'
