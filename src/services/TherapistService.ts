@@ -78,7 +78,7 @@ export default class TherapistService
 
     public async getTherapist(id: string) {
         try {
-            const therapist = await this.userModel.findOne({ where: { id: parseInt(id)}, include: [{
+            const therapist = await this.userModel.findOne({ where: { id: parseInt(id), 'userType': this.THERAPIST_TYPE}, include: [{
                 model: TherapySetting}, 
                 {model: UserMedia}, 
                 {model: UserAilment}] })
