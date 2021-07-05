@@ -73,6 +73,24 @@ export default class TherapistService
         } catch (err) {
             return new ErrorHandler(500, 'Internal Server Error')
         }
+    }
 
+    public async getTherapist(id: string) {
+        try {
+            const therapist = await this.userModel.findOne({ where: { id: parseInt(id)}, include: [{
+                model: TherapySetting}, 
+                {model: UserMedia}, 
+                {model: UserAilment}] })
+        
+                if (therapist === null) {
+                    return false
+                }
+                const therapistJson = therapist.toJSON()
+                const { email, password, createdAt, updatedAt, ...otherTherapistDetails } = therapistJson
+                return otherTherapistDetails
+        } catch (err) {
+            console.log(err)
+            return new ErrorHandler(500, 'Internal server error')
+        }
     }
 }
