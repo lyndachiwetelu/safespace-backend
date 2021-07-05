@@ -14,7 +14,13 @@ const port: string | number = process.env.SERVER_PORT || 8000;
 const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
+const corsOptions = {
+  origin: ["http://localhost:3000"],
+  optionsSuccessStatus: 200,
+  credentials: true
+}
+
+app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(express.json())
 app.use('/api/v1/users', UserRouter);
