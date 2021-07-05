@@ -1,30 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginUserSchema } from "../validation/schema/loginUser";
 import { SignupUserSchema } from "../validation/schema/signupUser";
+import { UpdateUserSettingsSchema } from "../validation/schema/updateSettings";
+import { validationHandler } from "./ValidationHandler";
 
 export const validateSignup = (req: Request, res: Response, next: NextFunction) => {
-    const { error } = SignupUserSchema.validate(req.body, {abortEarly: false})
-    if (error) {
-        const messages = error.details.map(detail => detail.message)
-        return res.status(400).send({
-            status: 400,
-            messages
-          });
-    }
-
-    next()
+    return validationHandler(SignupUserSchema, req, res, next)
 }
 
 export const validateLogin = (req: Request, res: Response, next: NextFunction) => {
-    const { error } = LoginUserSchema.validate(req.body, {abortEarly: false})
-    if (error) {
-        const messages = error.details.map(detail => detail.message)
-        return res.status(400).send({
-            status: 400,
-            messages
-          });
-    }
+    return validationHandler(LoginUserSchema, req, res, next)
+}
 
-    next()
-
+export const validateUpdateUserSettings = (req: Request, res: Response, next: NextFunction) => {
+    return validationHandler(UpdateUserSettingsSchema, req, res, next)
 }

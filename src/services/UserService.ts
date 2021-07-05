@@ -7,6 +7,8 @@ import UserMedia from '../models/UserMedia'
 import UserAilment from '../models/UserAilment'
 import { getAilmentName, getMediaName } from '../dataProvider'
 import { ErrorHandler } from '../error'
+import { Op } from 'sequelize'
+
 
 dotenv.config()
 
@@ -127,6 +129,31 @@ export default class UserService
         } catch (err) {
             throw new ErrorHandler(500, 'Internal Server Error')
         } 
+    }
+
+    public  async updateUserSettings(userId: string, userSettings: any): Promise<any> {
+        try {
+            const {media, ailments, ...settings} = userSettings
+            const updatedSettings = await this.userSettingModel.update({couplesTherapy:settings.couplesTherapy, religiousTherapy:settings.religiousTherapy}, { where: {userId: parseInt(userId)}})
+            const updatedMedia = await this.userMediaModel.destroy({where: {userId}})
+            const updatedAilments = await this.userAilmentModel.destroy({where: {userId}})
+        
+            if (updatedSettings) {
+                const savedMedia = await this.userMediaModel.bulkCreate(media.map((medium:any) => ({ mediaKey: medium, userId}) ))
+                const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map((ailment:any) => ({ ailmentKey: ailment, userId})))
+                settings.media = savedMedia
+                settings.ailments = savedAilments
+
+                return settings
+            } else {
+                throw new ErrorHandler(500, 'Error saving updated settings')
+            }
+
+        } catch (err) {
+            console.log(err)
+            throw new ErrorHandler(500, 'Internal Server Error!')
+        }
+
     }
 
 }
