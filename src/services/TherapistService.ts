@@ -5,6 +5,7 @@ import UserAilment from '../models/UserAilment'
 import TherapySetting from '../models/TherapistSetting'
 import { Op } from 'sequelize'
 import { ErrorHandler } from '../error'
+import { getAilmentName, getMediaName } from '../dataProvider'
 
 
 export default class TherapistService 
@@ -73,6 +74,36 @@ export default class TherapistService
         } catch (err) {
             return new ErrorHandler(500, 'Internal Server Error')
         }
+    }
 
+    public async getTherapist(id: string) {
+        try {
+            const therapist = await this.userModel.findOne({ where: { id: parseInt(id), 'userType': this.THERAPIST_TYPE}, include: [{
+                model: TherapySetting}, 
+                {model: UserMedia}, 
+                {model: UserAilment}] })
+        
+                if (therapist === null) {
+                    return false
+                }
+                const therapistJson = therapist.toJSON()
+                const { email, password, createdAt, updatedAt, ailments, media, ...otherTherapistDetails } = therapistJson
+                const updatedAilments = ailments.map((ailment: any) => {
+                    const ailmentName = getAilmentName(ailment.ailmentKey)
+                    ailment.name = ailmentName
+                    return ailment
+                })
+                const updatedMedia = media.map((medium: any) => {
+                    const mediaName = getMediaName(medium.mediaKey)
+                    medium.name = mediaName
+                    return medium
+                })
+                otherTherapistDetails.ailments = updatedAilments
+                otherTherapistDetails.media = updatedMedia
+                return otherTherapistDetails
+        } catch (err) {
+            console.log(err)
+            return new ErrorHandler(500, 'Internal server error')
+        }
     }
 }
