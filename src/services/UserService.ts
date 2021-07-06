@@ -119,7 +119,7 @@ export default class UserService
         try {
             const user = await this.userExists(email, password)
             if (user !== false) {
-                const {id, password, updatedAt, ...userData} = user.toJSON()
+                const {password, updatedAt, ...userData} = user.toJSON()
                 const token = this.generateAccessToken(userData.id)
                 
                 return {token, userData}
