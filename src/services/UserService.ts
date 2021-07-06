@@ -8,6 +8,7 @@ import UserAilment from '../models/UserAilment'
 import { getAilmentName, getMediaName } from '../dataProvider'
 import { ErrorHandler } from '../error'
 import { Op } from 'sequelize'
+import { settings } from 'cluster'
 
 
 dotenv.config()
@@ -120,7 +121,12 @@ export default class UserService
             const user = await this.userExists(email, password)
             if (user !== false) {
                 const {password, updatedAt, ...userData} = user.toJSON()
+                const setting = await this.userSettingModel.findOne({where: {userId: userData.id}})
+                const media = await this.userMediaModel.findAll({where: {userId: userData.id}})
+                const ailments = await this.userAilmentModel.findAll({where: {userId: userData.id}})
                 const token = this.generateAccessToken(userData.id)
+                const { id, userId, age, hasHadTherapy, ...settingDetails } = setting?.toJSON()
+                userData.settings = {media, ailments, ...settingDetails}
                 
                 return {token, userData}
             }
