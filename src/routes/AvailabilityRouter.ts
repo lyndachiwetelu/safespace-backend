@@ -6,5 +6,6 @@ const router = express.Router()
 
 router.get('/:userId', authenticateToken, AvailabilityController.getAvailabilities)
 router.post('/:userId', authenticateToken, validateAddAvailability, AvailabilityController.addAvailability)
+router.delete('/:id', authenticateToken, AvailabilityController.deleteAvailability)
 
 export default router

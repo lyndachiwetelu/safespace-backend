@@ -34,4 +34,22 @@ export default class AvailabilityController
         return res.status(201).json(availability)
      }
 
+     public static async deleteAvailability(req:Request, res:Response, next:NextFunction) {
+         try {
+            const id = parseInt(req.params.id)
+            const availExists = availService.availabilityExists(id)
+            if (await availExists === false) {
+                return res.sendStatus(404)
+            }
+
+            const deleted = await availService.deleteAvailability(id)
+            if (deleted === false) {
+                res.sendStatus(405)
+            }
+            return res.sendStatus(200)
+         } catch (err) {
+             next(err)
+         }
+     }
+
 }

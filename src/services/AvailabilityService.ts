@@ -60,6 +60,22 @@ export default class AvailabilityService
        }
     }
 
+    public async deleteAvailability(id: number) {
+        try {
+            const activeSessions = await this.sessionModel.findAll({where: {availabilityId:id, status:{
+                [Op.in]: ['created', 'confirmed', 'active', 'past' ]
+            }}})
+            if (activeSessions.length > 0) {
+                return false
+            }
+    
+            await this.availModel.destroy({where: {id}})
+            return true
+        } catch (err) {
+            throw new ErrorHandler(500, 'internal Server Error')
+        }
+    }
+
     private async getAvailabilitiesForDay(availability:any, time=60) {
         const day = moment.utc(availability.day).format('YYYY-MM-DD hh:mm:ss')
         const activeSessions:any = await this.sessionModel.findAll({where: {day, therapist: availability.userId} })
