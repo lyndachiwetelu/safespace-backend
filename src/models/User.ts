@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt'
 import UserAilment from './UserAilment'
 import UserMedia from './UserMedia'
 import UserSetting from './UserSetting'
-import TherapySetting from './TherapistSetting'
+import TherapistSetting from './TherapistSetting'
+import UserSession from './UserSession'
 
 @Table({
     modelName: '"User"'
@@ -27,11 +28,17 @@ export default class User extends Model {
     @HasMany(() => UserMedia)
     media!: UserMedia[]
 
+    @HasMany(() => UserSession, 'requestedBy')
+    sessions!: UserSession[]
+
+    @HasMany(() => UserSession, 'therapist')
+    therapistSessions!: UserSession[]
+
     @HasOne(() => UserSetting)
     userSetting!: UserSetting
 
-    @HasOne(() => TherapySetting)
-    therapistSetting!: TherapySetting
+    @HasOne(() => TherapistSetting)
+    therapistSetting!: TherapistSetting
 
 
     @BeforeCreate

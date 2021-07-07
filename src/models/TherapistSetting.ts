@@ -5,7 +5,7 @@ import User from './User'
     modelName: '"Therapist_Setting"',
     timestamps: false,
 })
-export default class TherapySetting extends Model {
+export default class TherapistSetting extends Model {
     @ForeignKey(() => User)
     @Column
     userId!: number
