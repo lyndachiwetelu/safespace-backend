@@ -62,6 +62,9 @@ export default class SessionController
         try {
             const id = parseInt(req.params.id)
             const session = await sessionService.sessionExists(id)
+            if (session === false) {
+                return res.sendStatus(404)
+            }
             await sessionService.deleteSession(id)
             return res.sendStatus(200)
         } catch (err) {
