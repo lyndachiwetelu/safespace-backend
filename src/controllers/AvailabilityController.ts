@@ -30,6 +30,10 @@ export default class AvailabilityController
             return res.sendStatus(404)
         }
 
+        if (await availService.duplicateExists(userId, req.body.from, req.body.to, req.body.day)) {
+            return res.sendStatus(409)
+        }
+
         const availability = await availService.addAvailability(req.body, userId)
         return res.status(201).json(availability)
      }

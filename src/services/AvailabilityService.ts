@@ -76,6 +76,16 @@ export default class AvailabilityService
         }
     }
 
+    public async duplicateExists(userId: number, from:string, to:string, day:string) {
+        const dayDate = moment.utc(day).format('YYYY-MM-DD hh:mm:ss')
+        const exists = await this.availModel.findOne({where:{userId, from, to, day: dayDate}})
+        if (exists !== null) {
+            return true
+        }
+
+        return false
+    }
+
     private async getAvailabilitiesForDay(availability:any, time=60) {
         const day = moment.utc(availability.day).format('YYYY-MM-DD hh:mm:ss')
         const activeSessions:any = await this.sessionModel.findAll({where: {day, therapist: availability.userId} })

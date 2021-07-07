@@ -13,6 +13,10 @@ export default class SessionController
             if (await availService.availabilityExists(req.body.availabilityId) === false || await userService.userExists('', '', req.body.requestedBy) === false) {
                 return res.sendStatus(404)
             }
+
+            if (await sessionService.duplicateExists(parseInt(req.body.requestedBy), req.body.from, req.body.to, parseInt(req.body.availabilityId))) {
+                return res.sendStatus(409)
+            }
             const session = await sessionService.addSession(req.body)
             return res.status(200).json(session)
        } catch (err) {

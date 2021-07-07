@@ -1,3 +1,4 @@
+import moment from "moment"
 import { ErrorHandler } from "../error"
 import User from "../models/User"
 import UserModel from "../models/User"
@@ -74,6 +75,15 @@ export default class SessionService
         } catch(err) {
             throw new ErrorHandler(500, 'Internal Server Error')
         } 
+    }
+
+    public async duplicateExists(userId: number, from:string, to:string, availabilityId: number) {
+        const exists = await this.sessionModel.findOne({where:{requestedBy:userId, from, to, availabilityId }})
+        if (exists !== null) {
+            return true
+        }
+        
+        return false
     }
 
     public async updateStatus(status: string, id: number): Promise<any> {
