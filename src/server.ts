@@ -4,6 +4,8 @@ import { sequelize } from "./database";
 import cookieParser from 'cookie-parser'
 import UserRouter from "./routes/UserRouter"
 import TherapistRouter from "./routes/TherapistRouter"
+import SessionRouter from "./routes/SessionRouter"
+import AvailabilityRouter from "./routes/AvailabilityRouter"
 import { ErrorHandler, handleError } from "./error";
 import cors from 'cors'
 
@@ -25,6 +27,8 @@ app.use(cookieParser())
 app.use(express.json())
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/therapists', TherapistRouter);
+app.use('/api/v1/availabilities', AvailabilityRouter);
+app.use('/api/v1/sessions', SessionRouter);
 
 app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
   handleError(err, res);
