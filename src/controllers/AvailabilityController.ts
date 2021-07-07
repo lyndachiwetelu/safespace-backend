@@ -14,7 +14,7 @@ export default class AvailabilityController
         }
 
         let userExists = await userService.userExists('', '', userId)
-        userExists = userExists.toJSON()
+        userExists = userExists === false ? userExists: userExists.toJSON()
         if (userExists === false || userExists.userType !== 'therapist') {
             return res.sendStatus(404)
         }
@@ -29,7 +29,7 @@ export default class AvailabilityController
         if (await userService.userExists('', '', userId) === false) {
             return res.sendStatus(404)
         }
-        
+
         const availability = await availService.addAvailability(req.body, userId)
         return res.status(201).json(availability)
      }

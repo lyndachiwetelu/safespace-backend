@@ -51,7 +51,6 @@ export default class SessionService
                 return otherSessionDetails
             })
        } catch (err) {
-           console.log(err)
            throw new ErrorHandler(500, 'Internal server error')
        }
     }
@@ -92,7 +91,6 @@ export default class SessionService
                 
             }
         } catch (err) {
-            console.log(err)
             throw new ErrorHandler(500, 'Internal Server Error')
         }
     }
