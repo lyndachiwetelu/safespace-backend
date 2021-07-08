@@ -2,7 +2,7 @@ import UserModel from '../models/User'
 import UserSetting from '../models/UserSetting'
 import UserMedia from '../models/UserMedia'
 import UserAilment from '../models/UserAilment'
-import TherapySetting from '../models/TherapistSetting'
+import TherapistSetting from '../models/TherapistSetting'
 import { Op } from 'sequelize'
 import { ErrorHandler } from '../error'
 import { getAilmentName, getMediaName } from '../dataProvider'
@@ -30,7 +30,7 @@ export default class TherapistService
             const userAilments = await this.userAilmentModel.findAll({where: {userId}})
             const userMedia = await this.userMediaModel.findAll({where: {userId}})
             const therapists = await this.userModel.findAll({ include: [{
-                model: TherapySetting,
+                model: TherapistSetting,
                 where: {
                     ageFrom: {
                         [Op.lte]: [userSettings?.toJSON().age]
@@ -79,7 +79,7 @@ export default class TherapistService
     public async getTherapist(id: string) {
         try {
             const therapist = await this.userModel.findOne({ where: { id: parseInt(id), 'userType': this.THERAPIST_TYPE}, include: [{
-                model: TherapySetting}, 
+                model: TherapistSetting}, 
                 {model: UserMedia}, 
                 {model: UserAilment}] })
         
