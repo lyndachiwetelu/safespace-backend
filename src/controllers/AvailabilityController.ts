@@ -8,9 +8,9 @@ export default class AvailabilityController
 {
     public static async getAvailabilities(req:Request, res:Response, next:NextFunction){
         const userId = parseInt(req.params.userId)
-        const day:any = req.query.day
+        let day:any = req.query.day
         if (!day) {
-            return res.sendStatus(400)
+            day = null
         }
 
         let userExists = await userService.userExists('', '', userId)

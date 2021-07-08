@@ -27,12 +27,18 @@ export default class AvailabilityService
         }
     }
 
-    public async getAvailabilityForUser(userId: number, day:string) {
-        day = moment.utc(day).format('YYYY-MM-DD hh:mm:ss')
-        try {
-            const avails = await this.availModel.findAll({where: {  userId, day: {
+    public async getAvailabilityForUser(userId: number, day:any) {
+        let where = {}
+        if (day !== null) {
+            day = moment.utc(day).format('YYYY-MM-DD hh:mm:ss')
+            where = {  userId, day: {
                 [Op.eq]: day 
-            } }})
+            } }
+        } else {
+            where = { userId }
+        }
+        try {
+            const avails = await this.availModel.findAll({where })
             const user = await this.userModel.findOne({where:{id:userId}, include: [TherapistSetting]})
             const userJson = user?.toJSON()
             return avails.map(async(avail:any) =>  {
