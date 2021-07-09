@@ -1,9 +1,13 @@
 import moment from "moment"
 import { ErrorHandler } from "../error"
+import TherapistSettingModel from "../models/TherapistSetting"
 import User from "../models/User"
 import UserModel from "../models/User"
 import UserAvailabilityModel from "../models/UserAvailability"
 import UserSessionModel from "../models/UserSession"
+import { getAvailData } from "../transformers/Availability"
+import { getSessionData } from "../transformers/Session"
+import { getUserData } from "../transformers/User"
 import AvailabilityService from "./AvailabilityService"
 
 export default class SessionService 
@@ -12,11 +16,13 @@ export default class SessionService
     protected availModel: typeof UserAvailabilityModel
     protected sessionModel: typeof UserSessionModel
     protected availService: AvailabilityService
+    protected therapistSettingModel: typeof TherapistSettingModel
 
     public constructor() {
         this.userModel = UserModel
         this.availModel = UserAvailabilityModel
         this.sessionModel = UserSessionModel
+        this.therapistSettingModel = TherapistSettingModel
         this.availService = new AvailabilityService()
     }
 
@@ -27,7 +33,15 @@ export default class SessionService
             const day = availability.day
             const dataToStore = {therapist, day, ...sessionDetails}
             const session = await this.sessionModel.create(dataToStore)
-            return session.toJSON()
+            const sessionJson = session.toJSON()
+            sessionJson.availability = getAvailData(availability)
+            const therapistJson = await this.userModel.findOne( { where : {id: therapist, userType: "therapist"} } )
+            sessionJson.therapist = getUserData(therapistJson?.toJSON())
+            const therapistInfo = await this.therapistSettingModel.findOne({where: { userId: therapist}})
+            const therapistInfoJson = therapistInfo?.toJSON()
+            sessionJson.therapist.setting = therapistInfoJson
+            return getSessionData(sessionJson)
+
         } catch (err) {
             throw new ErrorHandler(500, 'Internal Server error')
         }
