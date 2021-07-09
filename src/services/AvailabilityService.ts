@@ -41,13 +41,19 @@ export default class AvailabilityService
             const avails = await this.availModel.findAll({where })
             const user = await this.userModel.findOne({where:{id:userId}, include: [TherapistSetting]})
             const userJson = user?.toJSON()
-            return avails.map(async(avail:any) =>  {
+            const aMap = avails.map(async(avail:any) =>  {
                 const availJson = avail.toJSON()
                 const times = await this.getAvailabilitiesForDay(availJson, parseInt(userJson.therapistSetting.timePerSession))
                 availJson.times = times
                 return availJson
             })
+
+            const availResults = await Promise.all(aMap)
+            return availResults.filter((avail:any) => {
+                return (avail.times.length > 0) 
+            })
         } catch (err) {
+            console.log(err)
             throw new ErrorHandler(500, 'Internal server error')
         }
     }
@@ -94,7 +100,9 @@ export default class AvailabilityService
 
     private async getAvailabilitiesForDay(availability:any, time=60) {
         const day = moment.utc(availability.day).format('YYYY-MM-DD hh:mm:ss')
-        const activeSessions:any = await this.sessionModel.findAll({where: {day, therapist: availability.userId} })
+        const activeSessions:any = await this.sessionModel.findAll({where: {day, therapist: availability.userId, status:{
+            [Op.not]: 'cancelled'
+        }} })
         const times = activeSessions.map((session:any) => {
             const sessionJson = session.toJSON()
             const dayAvail = availability.day

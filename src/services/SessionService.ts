@@ -1,5 +1,6 @@
-import moment from "moment"
+import { Op } from "sequelize"
 import { ErrorHandler } from "../error"
+import TherapistSetting from "../models/TherapistSetting"
 import TherapistSettingModel from "../models/TherapistSetting"
 import User from "../models/User"
 import UserModel from "../models/User"
@@ -55,7 +56,7 @@ export default class SessionService
             } else if (userType === 'therapist') {
                 where = { therapist:userId}
             }
-            const sessions = await this.sessionModel.findAll({ where, include: [{model: User, as:'user'}, {model: User, as:'therapistInfo'}] })
+            const sessions = await this.sessionModel.findAll({ where, include: [{model: User, as:'user'}, {model: User, as:'therapistInfo', include: [TherapistSetting]} ] })
             return sessions.map(session => {
                 const sessionJson = session.toJSON()
                 const {email, password, createdAt, updatedAt, userType, ...user} = sessionJson.user
@@ -92,7 +93,7 @@ export default class SessionService
     }
 
     public async duplicateExists(userId: number, from:string, to:string, availabilityId: number) {
-        const exists = await this.sessionModel.findOne({where:{requestedBy:userId, from, to, availabilityId }})
+        const exists = await this.sessionModel.findOne({where:{requestedBy:userId, from, to, availabilityId, status: {[Op.not]: 'cancelled'} }})
         if (exists !== null) {
             return true
         }

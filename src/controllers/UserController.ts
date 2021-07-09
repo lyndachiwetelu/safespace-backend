@@ -32,7 +32,7 @@ export default class UserController
                 return res.status(409).json({status: 409, message: 'User  with email exists!'})
             }
             const {token, ...user} = await userService.createUser(req.body)
-            return res.status(201).cookie('access_token', token, { maxAge:  2 * 60 * 60 * 1000, httpOnly: true}).json(user);
+            return res.status(201).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true}).json(user);
         } catch(err) {
             next(err)
         }
@@ -46,7 +46,7 @@ export default class UserController
             }
 
             const {token, userData}  = response
-            return res.status(200).cookie('access_token', token, { maxAge:  2 * 60 * 60 * 1000, httpOnly: true }).json(userData);
+            return res.status(200).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true }).json(userData);
 
         } catch (err) {
             next(err)

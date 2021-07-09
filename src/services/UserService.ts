@@ -32,7 +32,7 @@ export default class UserService
     }
 
     private generateAccessToken(userId: string) {
-        return jwt.sign({userId}, tokenSecret, { expiresIn: '7200s' });
+        return jwt.sign({userId}, tokenSecret, { expiresIn: '14400s' });
     }
 
     public async getAllUsers() {
