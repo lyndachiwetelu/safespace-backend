@@ -18,7 +18,7 @@ export default class SessionController
                 return res.sendStatus(409)
             }
             const session = await sessionService.addSession(req.body)
-            return res.status(200).json(session)
+            return res.status(201).json(session)
        } catch (err) {
            next(err)
        }
