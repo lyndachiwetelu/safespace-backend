@@ -17,13 +17,20 @@ const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
 const origins: any = process.env.ORIGINS || []
 
-const corsOptions = {
-  origin: [origins.split(',')],
-  optionsSuccessStatus: 200,
-  credentials: true
+
+var allowlist = origins.split(',')
+var corsOptionsDelegate = function (req: Request, callback: CallableFunction) {
+  var corsOptions;
+  if (allowlist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true, optionsSuccessStatus: 204,
+      credentials: true } // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false } // disable CORS for this request
+  }
+  callback(null, corsOptions) // callback expects two parameters: error and options
 }
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptionsDelegate))
 app.use(cookieParser())
 app.use(express.json())
 app.use('/api/v1/users', UserRouter);
