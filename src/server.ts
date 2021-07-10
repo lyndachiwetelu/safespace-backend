@@ -18,21 +18,22 @@ const app: Application = express();
 const origins: any = process.env.ORIGINS || []
 
 
-var allowlist = origins.split(',')
-var corsOptionsDelegate = function (req: Request, callback: CallableFunction) {
+const allowlist = origins.split(',')
+const corsOptionsDelegate = (req: Request, callback: CallableFunction) => {
   var corsOptions;
   if (allowlist.indexOf(req.header('Origin')) !== -1) {
     corsOptions = { origin: true, optionsSuccessStatus: 204,
-      credentials: true } // reflect (enable) the requested origin in the CORS response
+      credentials: true } 
   } else {
-    corsOptions = { origin: false } // disable CORS for this request
+    corsOptions = { origin: false } 
   }
-  callback(null, corsOptions) // callback expects two parameters: error and options
+  callback(null, corsOptions)
 }
 
-app.use(cors(corsOptionsDelegate))
+
 app.use(cookieParser())
 app.use(express.json())
+app.use(cors(corsOptionsDelegate))
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/therapists', TherapistRouter);
 app.use('/api/v1/availabilities', AvailabilityRouter);
