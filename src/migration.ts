@@ -17,6 +17,7 @@ const sequelize = new Sequelize({
     dialect: 'postgres',
     username: connectionConfig.username,
     password: connectionConfig.password,
+    host: connectionConfig.host
 });
 
 const umzug = new Umzug({

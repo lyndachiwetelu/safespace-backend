@@ -1,0 +1,24 @@
+FROM node:14-alpine as build
+
+WORKDIR /app
+
+COPY package.json yarn.lock /app/
+
+
+RUN yarn install --silent
+COPY . /app
+COPY .env.production /app/.env
+RUN yarn global add typescript
+RUN yarn build
+
+
+FROM node:14-alpine
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --prod
+COPY --from=build /app/ .
+RUN yarn global add pm2 
+RUN yarn global add ts-node
+EXPOSE 8081
+
+CMD ["sh", "-c", "yarn migrate --up && yarn migrate --up --seed && pm2-runtime start dist/server.js"]

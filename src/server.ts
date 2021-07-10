@@ -15,16 +15,25 @@ dotenv.config();
 const port: string | number = process.env.SERVER_PORT || 8000;
 const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
+const origins: any = process.env.ORIGINS || []
 
-const corsOptions = {
-  origin: ["http://localhost:3000"],
-  optionsSuccessStatus: 200,
-  credentials: true
+
+const allowlist = origins.split(',')
+const corsOptionsDelegate = (req: Request, callback: CallableFunction) => {
+  var corsOptions;
+  if (allowlist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true, optionsSuccessStatus: 204,
+      credentials: true } 
+  } else {
+    corsOptions = { origin: false } 
+  }
+  callback(null, corsOptions)
 }
 
-app.use(cors(corsOptions))
+
 app.use(cookieParser())
 app.use(express.json())
+app.use(cors(corsOptionsDelegate))
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/therapists', TherapistRouter);
 app.use('/api/v1/availabilities', AvailabilityRouter);

@@ -1,5 +1,6 @@
 import { Table, Column, ForeignKey, Model, BelongsTo } from 'sequelize-typescript'
 import User from './User'
+import { DataTypes } from 'sequelize'
 
 @Table({
     modelName: '"User_Setting"',
@@ -7,19 +8,19 @@ import User from './User'
 })
 export default class UserSetting extends Model {
     @ForeignKey(() => User)
-    @Column
+    @Column(DataTypes.NUMBER)
     userId!: number
 
-    @Column
+    @Column(DataTypes.NUMBER)
     age!: number
 
-    @Column
+    @Column(DataTypes.BOOLEAN)
     hasHadTherapy!: boolean
 
-    @Column
+    @Column(DataTypes.STRING)
     religiousTherapy!: 'none' | 'muslim' |'christian' |'hindu' | 'buddhist'
 
-    @Column
+    @Column(DataTypes.BOOLEAN)
     couplesTherapy!: boolean
 
     @BelongsTo(() => User)
