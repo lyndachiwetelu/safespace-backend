@@ -1,4 +1,5 @@
 import { Table, Column, ForeignKey, Model, BelongsTo } from 'sequelize-typescript'
+import { DataTypes } from 'sequelize'
 import User from './User'
 
 @Table({
@@ -7,35 +8,35 @@ import User from './User'
 })
 export default class TherapistSetting extends Model {
     @ForeignKey(() => User)
-    @Column
+    @Column(DataTypes.NUMBER)
     userId!: number
 
-    @Column
+    @Column(DataTypes.NUMBER)
     ageFrom!: number
 
-    @Column
+    @Column(DataTypes.NUMBER)
     ageTo!: number
 
-    @Column
+    @Column(DataTypes.STRING)
     qualifications!: string
 
-    @Column
+    @Column(DataTypes.STRING)
     timePerSession!: '30' | '60'
 
-    @Column
+    @Column(DataTypes.NUMBER)
     pricePerSession!: number
 
-    @Column
+    @Column(DataTypes.STRING)
     religiousTherapy!: 'none' | 'muslim' |'christian' |'hindu' | 'buddhist'
 
-    @Column
+    @Column(DataTypes.BOOLEAN)
     couplesTherapy!: boolean
 
 
-    @Column
+    @Column(DataTypes.STRING)
     summary!: string
 
-    @Column
+    @Column(DataTypes.STRING)
     imageUrl!: string
 
     @BelongsTo(() => User)

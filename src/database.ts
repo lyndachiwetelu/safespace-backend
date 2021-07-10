@@ -11,7 +11,8 @@ export const sequelize = new Sequelize({
   dialect: 'postgres',
   username: connectionConfig.username,
   password: connectionConfig.password,
-  models: [__dirname + '/models/*.ts'],
+  host: connectionConfig.host,
+  models: [__dirname + '/models'],
   define: {
     freezeTableName: true
  }

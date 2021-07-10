@@ -5,21 +5,22 @@ import UserMedia from './UserMedia'
 import UserSetting from './UserSetting'
 import TherapistSetting from './TherapistSetting'
 import UserSession from './UserSession'
+import { DataTypes } from 'sequelize'
 
 @Table({
     modelName: '"User"'
 })
 export default class User extends Model {
-    @Column
+    @Column(DataTypes.STRING)
     name!: string
 
-    @Column
+    @Column(DataTypes.STRING)
     email!: string
 
-    @Column
+    @Column(DataTypes.STRING)
     password!: string
 
-    @Column
+    @Column(DataTypes.STRING)
     userType!: 'therapist' | 'patient'
 
     @HasMany(() => UserAilment)

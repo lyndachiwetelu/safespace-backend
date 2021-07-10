@@ -1,4 +1,5 @@
 import { Table, Column, ForeignKey, Model, BelongsTo} from 'sequelize-typescript'
+import { DataTypes } from 'sequelize'
 import User from './User'
 
 @Table({
@@ -6,16 +7,16 @@ import User from './User'
 })
 export default class UserAvailability extends Model {
     @ForeignKey(() => User)
-    @Column
+    @Column(DataTypes.NUMBER)
     userId!: number
 
-    @Column
+    @Column(DataTypes.DATEONLY)
     day!: Date
 
-    @Column
+    @Column(DataTypes.STRING)
     from!: string
 
-    @Column
+    @Column(DataTypes.STRING)
     to!: string
 
     @BelongsTo(() => User)

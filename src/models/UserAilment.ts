@@ -1,4 +1,5 @@
 import { Table, Column, ForeignKey, Model, BelongsTo} from 'sequelize-typescript'
+import { DataTypes } from 'sequelize'
 import User from './User'
 
 @Table({
@@ -7,10 +8,10 @@ import User from './User'
 })
 export default class UserAilment extends Model {
     @ForeignKey(() => User)
-    @Column
-    userId!: number
+    @Column(DataTypes.NUMBER)
+    userId!: Number
 
-    @Column
+    @Column(DataTypes.STRING)
     ailmentKey!: string
 
     @BelongsTo(() => User)

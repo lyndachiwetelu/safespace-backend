@@ -15,9 +15,10 @@ dotenv.config();
 const port: string | number = process.env.SERVER_PORT || 8000;
 const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
+const origins: any = process.env.ORIGINS || []
 
 const corsOptions = {
-  origin: ["http://localhost:3000"],
+  origin: [origins.split(',')],
   optionsSuccessStatus: 200,
   credentials: true
 }

@@ -84,6 +84,7 @@ export default class UserService
 
 
         } catch(err) {
+            console.log(err)
             throw new ErrorHandler(500, 'Internal Server Error')
         }
         
@@ -156,8 +157,7 @@ export default class UserService
             }
 
         } catch (err) {
-            console.log(err)
-            throw new ErrorHandler(500, 'Internal Server Error!')
+            throw new ErrorHandler(500, 'Internal Server Error')
         }
 
     }
