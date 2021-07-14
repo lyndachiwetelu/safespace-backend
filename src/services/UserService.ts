@@ -7,8 +7,6 @@ import UserMedia from '../models/UserMedia'
 import UserAilment from '../models/UserAilment'
 import { getAilmentName, getMediaName } from '../dataProvider'
 import { ErrorHandler } from '../error'
-import { Op } from 'sequelize'
-import { settings } from 'cluster'
 
 
 dotenv.config()
@@ -31,7 +29,7 @@ export default class UserService
         this.userMediaModel = UserMedia
     }
 
-    private generateAccessToken(userId: string) {
+    public generateAccessToken(userId: string) {
         return jwt.sign({userId}, tokenSecret, { expiresIn: '14400s' });
     }
 

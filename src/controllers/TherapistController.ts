@@ -38,8 +38,8 @@ export default class TherapistController
             if (await userService.userExists(req.body.email) !== false) {
                 return res.sendStatus(409)
             }
-            const therapist = await therapistService.createTherapist(req.body);
-            return res.status(201).json(therapist)
+            const {therapist, token} = await therapistService.createTherapist(req.body);
+            return res.status(201).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true}).json(therapist);
         } catch (err) {
             next(err)
         }

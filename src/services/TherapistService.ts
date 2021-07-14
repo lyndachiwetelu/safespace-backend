@@ -8,6 +8,7 @@ import { ErrorHandler } from '../error'
 import { getAilmentName, getMediaName } from '../dataProvider'
 import { CreateTherapist } from '../types/UserRequest'
 import { getUserData } from '../transformers/User'
+import UserService from './UserService'
 
 
 export default class TherapistService 
@@ -18,12 +19,14 @@ export default class TherapistService
     userAilmentModel: typeof UserAilment
 
     THERAPIST_TYPE = 'therapist'
+    userService: UserService
 
     public constructor() {
         this.userModel = UserModel
         this.userSettingModel = UserSetting
         this.userAilmentModel = UserAilment
         this.userMediaModel = UserMedia
+        this.userService = new UserService()
     }
 
     public async getMatchingTherapists(userId: string) {
@@ -114,7 +117,8 @@ export default class TherapistService
        try {
             const therapist = await this.userModel.create({userType: this.THERAPIST_TYPE, ...details})
             const therapistJson = getUserData(therapist.toJSON())
-            return therapistJson
+            const token = this.userService.generateAccessToken(therapistJson.id)
+            return { token, therapist:therapistJson }
        } catch(err) {
             throw new ErrorHandler(500, 'Internal server error')
        }
