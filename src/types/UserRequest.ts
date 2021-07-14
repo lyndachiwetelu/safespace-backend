@@ -20,3 +20,9 @@ export interface UserResponse extends CreateUser {
     updatedAt: Date,
     settings: UserSettings
 }
+
+export interface CreateTherapist  {
+    email: String,
+    password: String,
+    code: String
+}

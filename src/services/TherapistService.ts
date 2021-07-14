@@ -6,6 +6,9 @@ import TherapistSetting from '../models/TherapistSetting'
 import { Op } from 'sequelize'
 import { ErrorHandler } from '../error'
 import { getAilmentName, getMediaName } from '../dataProvider'
+import { CreateTherapist } from '../types/UserRequest'
+import { getUserData } from '../transformers/User'
+import UserService from './UserService'
 
 
 export default class TherapistService 
@@ -16,12 +19,14 @@ export default class TherapistService
     userAilmentModel: typeof UserAilment
 
     THERAPIST_TYPE = 'therapist'
+    userService: UserService
 
     public constructor() {
         this.userModel = UserModel
         this.userSettingModel = UserSetting
         this.userAilmentModel = UserAilment
         this.userMediaModel = UserMedia
+        this.userService = new UserService()
     }
 
     public async getMatchingTherapists(userId: string) {
@@ -104,6 +109,36 @@ export default class TherapistService
         } catch (err) {
             console.log(err)
             return new ErrorHandler(500, 'Internal server error')
+        }
+    }
+
+    public async createTherapist(details: CreateTherapist): Promise<any>
+    {
+       try {
+            const therapist = await this.userModel.create({userType: this.THERAPIST_TYPE, ...details})
+            const therapistJson = getUserData(therapist.toJSON())
+            const token = this.userService.generateAccessToken(therapistJson.id)
+            return { token, therapist:therapistJson }
+       } catch(err) {
+            throw new ErrorHandler(500, 'Internal server error')
+       }
+    }
+
+    public async loginTherapist(body: any) {
+        try {
+            const user = await this.userService.userExists(body.email, body.password)
+            if (user !== false) {
+                const userData = getUserData(user.toJSON())
+                if (userData.userType !== this.THERAPIST_TYPE) {
+                    return null
+                }
+                const token = this.userService.generateAccessToken(userData.id) 
+                return {token, therapist: userData}
+            }
+    
+            return null
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
         }
     }
 }
