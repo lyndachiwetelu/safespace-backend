@@ -12,6 +12,7 @@ const up: Migration = async ({context:queryInterface} : { context: QueryInterfac
         code: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
         },
         createdAt: {
             type: DataTypes.DATE,

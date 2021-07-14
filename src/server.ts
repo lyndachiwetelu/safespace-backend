@@ -6,6 +6,7 @@ import UserRouter from "./routes/UserRouter"
 import TherapistRouter from "./routes/TherapistRouter"
 import SessionRouter from "./routes/SessionRouter"
 import AvailabilityRouter from "./routes/AvailabilityRouter"
+import InviteCodeRouter from "./routes/InviteCodeRouter"
 import { ErrorHandler, handleError } from "./error";
 import cors from 'cors'
 
@@ -38,6 +39,7 @@ app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/therapists', TherapistRouter);
 app.use('/api/v1/availabilities', AvailabilityRouter);
 app.use('/api/v1/sessions', SessionRouter);
+app.use('/api/v1/invite', InviteCodeRouter);
 
 app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => {
   handleError(err, res);
