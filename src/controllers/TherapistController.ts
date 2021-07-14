@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import InviteCodeService from "../services/InviteCodeService";
 import TherapistService from "../services/TherapistService";
 import UserService from "../services/UserService";
 
 const therapistService = new TherapistService();
 const userService = new UserService();
+const inviteService = new InviteCodeService();
 
 export default class TherapistController
 {
@@ -37,6 +39,10 @@ export default class TherapistController
         try {
             if (await userService.userExists(req.body.email) !== false) {
                 return res.sendStatus(409)
+            }
+
+            if (await inviteService.codeExists(req.body.code) === false) {
+                return res.status(400).json({status: 'error', message: 'Use a valid Invite code'})
             }
             const {therapist, token} = await therapistService.createTherapist(req.body);
             return res.status(201).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true}).json(therapist);

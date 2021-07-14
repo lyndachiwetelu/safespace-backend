@@ -23,5 +23,6 @@ export interface UserResponse extends CreateUser {
 
 export interface CreateTherapist  {
     email: String,
-    password: String
+    password: String,
+    code: String
 }

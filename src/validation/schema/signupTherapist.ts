@@ -6,6 +6,10 @@ export const SignupTherapistSchema = Joi.object({
         .max(60)
         .required(),
 
+    code: Joi.string()
+        .min(6)
+        .required(),
+
     email: Joi.string()
         .email({ minDomainSegments: 2 })
         .required(),
