@@ -6,6 +6,8 @@ import TherapistSetting from '../models/TherapistSetting'
 import { Op } from 'sequelize'
 import { ErrorHandler } from '../error'
 import { getAilmentName, getMediaName } from '../dataProvider'
+import { CreateTherapist } from '../types/UserRequest'
+import { getUserData } from '../transformers/User'
 
 
 export default class TherapistService 
@@ -105,5 +107,17 @@ export default class TherapistService
             console.log(err)
             return new ErrorHandler(500, 'Internal server error')
         }
+    }
+
+    public async createTherapist(details: CreateTherapist): Promise<any>
+    {
+       try {
+            const therapist = await this.userModel.create({userType: this.THERAPIST_TYPE, ...details})
+            const therapistJson = getUserData(therapist.toJSON())
+            return therapistJson
+       } catch(err) {
+            throw new ErrorHandler(500, 'Internal server error')
+       }
+
     }
 }

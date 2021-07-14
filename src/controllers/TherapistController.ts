@@ -32,4 +32,16 @@ export default class TherapistController
             next(err)
         }
     }
+
+    public static async createTherapist(req: Request, res:Response, next: NextFunction) : Promise<Response | void> {
+        try {
+            if (await userService.userExists(req.body.email) !== false) {
+                return res.sendStatus(409)
+            }
+            const therapist = await therapistService.createTherapist(req.body);
+            return res.status(201).json(therapist)
+        } catch (err) {
+            next(err)
+        }
+    }
 }
