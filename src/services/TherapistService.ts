@@ -122,6 +122,23 @@ export default class TherapistService
        } catch(err) {
             throw new ErrorHandler(500, 'Internal server error')
        }
+    }
 
+    public async loginTherapist(body: any) {
+        try {
+            const user = await this.userService.userExists(body.email, body.password)
+            if (user !== false) {
+                const userData = getUserData(user.toJSON())
+                if (userData.userType !== this.THERAPIST_TYPE) {
+                    return null
+                }
+                const token = this.userService.generateAccessToken(userData.id) 
+                return {token, therapist: userData}
+            }
+    
+            return null
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
+        }
     }
 }

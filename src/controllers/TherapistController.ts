@@ -50,4 +50,19 @@ export default class TherapistController
             next(err)
         }
     }
+
+    public static async loginTherapist(req: Request, res:Response, next: NextFunction) : Promise<Response | void> {
+        try {
+            const response = await therapistService.loginTherapist(req.body)
+            if (response === null) {
+                return res.status(400).json({status: 400, message: 'Invalid Credentials'})
+            }
+
+            const {token, therapist}  = response
+            return res.status(200).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true }).json(therapist);
+
+        } catch (err) {
+            next(err)
+        }
+    }
 }

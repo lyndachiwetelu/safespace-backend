@@ -5,7 +5,3 @@ import { validationHandler } from "./ValidationHandler";
 export const validateTherapistSignup = (req: Request, res: Response, next: NextFunction) => {
     return validationHandler(SignupTherapistSchema, req, res, next)
 }
-
-export const validateTherapistLogin = (req: Request, res: Response, next: NextFunction) => {
-    // @todo
-}
