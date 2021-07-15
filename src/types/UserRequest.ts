@@ -26,3 +26,4 @@ export interface CreateTherapist  {
     password: String,
     code: String
 }
+

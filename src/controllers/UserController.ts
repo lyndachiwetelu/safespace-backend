@@ -1,3 +1,4 @@
+import { parse } from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import UserService from "../services/UserService";
 const userService = new UserService();
@@ -47,6 +48,23 @@ export default class UserController
 
             const {token, userData}  = response
             return res.status(200).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true }).json(userData);
+
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    public static async getUserSettings(req:Request, res:Response, next:NextFunction): Promise<Response | void>  {
+        try {
+            const userId = parseInt(req.params.id)
+            if (await userService.userExists('', '', userId) === false) {
+                res.sendStatus(404)
+            }
+            const setting = await userService.getSetting(userId)
+            if (setting === null) {
+                return res.status(404).json({status: 'error', message: 'Setting does not exist'})
+            }
+            return res.status(200).json(setting)
 
         } catch (err) {
             next(err)

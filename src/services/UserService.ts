@@ -60,7 +60,7 @@ export default class UserService
             
             const savedSettings = await this.userSettingModel.create({userId: userData.id, ...userSettings})
             const {id, userId, ...settingsToReturn} = savedSettings.toJSON()
-            const savedMedia = this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : userData.id})))
+            const savedMedia = await this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : userData.id})))
             const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map(ailment => ({ ailmentKey: ailment, userId : userData.id})))
             const token = this.generateAccessToken(userData.id)
 
@@ -68,7 +68,7 @@ export default class UserService
                 token, 
                 ...userData, 
                 settings: {
-                     media: (await savedMedia).map(medium => {
+                     media: savedMedia.map(medium => {
                          medium = medium.toJSON()
                          return {mediaKey:medium.mediaKey, name: getMediaName(medium.mediaKey)}
                         }),
@@ -158,6 +158,40 @@ export default class UserService
             throw new ErrorHandler(500, 'Internal Server Error')
         }
 
+    }
+
+    public async getSetting(userId: number): Promise<any> {
+        try {
+            let media = await this.userMediaModel.findAll({where: {userId}})
+            let ailments = await this.userAilmentModel.findAll({where: {userId}})
+            let user = await this.userExists('', '', userId)
+            let userSetting: UserSetting | null = await this.userSettingModel.findOne({where: {userId}})
+            user  = user.toJSON()
+            const userSettingJson = userSetting?.toJSON() 
+            if (!userSettingJson) {
+                return null
+            }
+            media = media.map((medium:any) => {
+                const mediumJson = medium.toJSON()
+                mediumJson.name = getMediaName(mediumJson.mediaKey)
+                return mediumJson
+            })
+
+            ailments = ailments.map((ailment:any) => {
+                const ailmentJson = ailment.toJSON()
+                ailmentJson.name = getAilmentName(ailmentJson.ailmentKey)
+                return ailmentJson
+            })
+
+            userSettingJson.name = user.name
+            userSettingJson.media = media
+            userSettingJson.ailments = ailments
+
+            return userSettingJson
+
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal server error')
+        }
     }
 
 }

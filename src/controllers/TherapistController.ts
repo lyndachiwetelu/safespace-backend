@@ -1,3 +1,4 @@
+import { settings } from "cluster";
 import { NextFunction, Request, Response } from "express";
 import InviteCodeService from "../services/InviteCodeService";
 import TherapistService from "../services/TherapistService";
@@ -9,6 +10,21 @@ const inviteService = new InviteCodeService();
 
 export default class TherapistController
 {
+    public static async  getSetting(req: Request, res:Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const userId = parseInt(req.params.userId)
+            if (await therapistService.therapistExists(userId) === false) {
+                return res.sendStatus(404)
+            }
+            const setting = await therapistService.getSetting(userId)
+            if (setting === null) {
+                return res.status(404).json({status: 'error', message: 'Setting does not exist'})
+            }
+            return res.status(200).json(setting)
+        } catch (err) {
+            next(err)
+        }
+    }
     public static async getMatchingTherapistsForUser(req: Request, res:Response, next: NextFunction): Promise<Response | void> {
         try {
             if (await userService.userExists('', '', req.params.userId) !== false) {
@@ -60,6 +76,19 @@ export default class TherapistController
 
             const {token, therapist}  = response
             return res.status(200).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true }).json(therapist);
+
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    public static async saveTherapistSettings(req: Request, res:Response, next: NextFunction) : Promise<Response | void> {
+        try {
+            if (await therapistService.therapistExists(req.body.userId) === false) {
+                return res.sendStatus(404)
+            }
+            const response = await therapistService.saveSetting(req.body)
+            return res.status(200).json(response);
 
         } catch (err) {
             next(err)

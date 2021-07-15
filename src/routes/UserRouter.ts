@@ -8,5 +8,6 @@ router.get('/', authenticateToken, UserController.getUsers)
 router.post('/', validateSignup, UserController.createUser)
 router.post('/login', validateLogin, UserController.loginUser)
 router.patch('/:id/settings', authenticateToken, validateUpdateUserSettings, UserController.updateUserSettings)
+router.get('/:id/settings', authenticateToken, UserController.getUserSettings)
 
 export default router
