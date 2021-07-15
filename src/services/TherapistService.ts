@@ -170,7 +170,6 @@ export default class TherapistService
             therapistJson.setting = settingJson
             return therapistJson
         } catch (err) {
-            console.log(err)
             throw new ErrorHandler(500, 'Internal Server Error')
         }
     }
