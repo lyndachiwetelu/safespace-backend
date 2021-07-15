@@ -9,6 +9,7 @@ import { getAilmentName, getMediaName } from '../dataProvider'
 import { CreateTherapist } from '../types/UserRequest'
 import { getUserData } from '../transformers/User'
 import UserService from './UserService'
+import { CreateTherapistSetting } from '../types/TherapistRequest'
 
 
 export default class TherapistService 
@@ -20,12 +21,14 @@ export default class TherapistService
 
     THERAPIST_TYPE = 'therapist'
     userService: UserService
+    therapistSettingModel: typeof TherapistSetting
 
     public constructor() {
         this.userModel = UserModel
         this.userSettingModel = UserSetting
         this.userAilmentModel = UserAilment
         this.userMediaModel = UserMedia
+        this.therapistSettingModel = TherapistSetting
         this.userService = new UserService()
     }
 
@@ -140,5 +143,82 @@ export default class TherapistService
         } catch (err) {
             throw new ErrorHandler(500, 'Internal Server Error')
         }
+    }
+
+    public async saveSetting(settings: CreateTherapistSetting) {
+        try {
+            const { name, media, ailments, ...otherSettings} = settings
+            const updatedUser = await this.userModel.update({name}, { where: {id: otherSettings.userId}})
+            await this.userMediaModel.destroy({where:{userId: otherSettings.userId}})
+            await this.userAilmentModel.destroy({where:{userId: otherSettings.userId}})
+            const savedMedia = await this.userMediaModel.bulkCreate(media.map(medium => ({ mediaKey: medium, userId : otherSettings.userId})))
+            const savedAilments = await this.userAilmentModel.bulkCreate(ailments.map(ailment => ({ ailmentKey: ailment, userId : otherSettings.userId})))
+            await this.therapistSettingModel.destroy({where:{userId: otherSettings.userId}})
+
+            const setting = await this.therapistSettingModel.create(otherSettings)
+            const settingJson = setting.toJSON()
+            settingJson.media =  savedMedia.map(medium => {
+                medium = medium.toJSON()
+                return {mediaKey:medium.mediaKey, name: getMediaName(medium.mediaKey)}
+               })
+            settingJson.ailments = savedAilments.map(ailment => {
+                ailment = ailment.toJSON()
+                return {ailmentKey:ailment.ailmentKey, name: getAilmentName(ailment.ailmentKey)}
+              })
+            const therapist = await this.userModel.findOne({where: {id:otherSettings.userId}})
+            const therapistJson = getUserData(therapist?.toJSON())
+            therapistJson.setting = settingJson
+            return therapistJson
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal Server Error')
+        }
+    }
+
+    public async getSetting(userId: number): Promise<any> {
+        try {
+            let media = await this.userMediaModel.findAll({where: {userId}})
+            let ailments = await this.userAilmentModel.findAll({where: {userId}})
+            let therapist = await this.userService.userExists('', '', userId)
+            let therapistSetting: TherapistSetting | null = await this.therapistSettingModel.findOne({where: {userId}})
+            therapist  = therapist.toJSON()
+            const therapistSettingJson = therapistSetting?.toJSON() 
+            if (!therapistSettingJson) {
+                return null
+            }
+            media = media.map((medium:any) => {
+                const mediumJson = medium.toJSON()
+                mediumJson.name = getMediaName(mediumJson.mediaKey)
+                return mediumJson
+            })
+
+            ailments = ailments.map((ailment:any) => {
+                const ailmentJson = ailment.toJSON()
+                ailmentJson.name = getAilmentName(ailmentJson.ailmentKey)
+                return ailmentJson
+            })
+
+            therapistSettingJson.name = therapist.name
+            therapistSettingJson.media = media
+            therapistSettingJson.ailments = ailments
+
+            return therapistSettingJson
+
+        } catch (err) {
+            throw new ErrorHandler(500, 'Internal server error')
+        }
+    }
+
+    public async therapistExists(userId: number): Promise<boolean> {
+        const userExists = await this.userService.userExists('', '', userId)
+        if (userExists) {
+            const user = userExists.toJSON()
+            if (user.userType !== this.THERAPIST_TYPE) {
+                return false
+            }
+
+            return  true
+        }
+
+        return userExists
     }
 }
