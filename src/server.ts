@@ -19,7 +19,7 @@ dotenv.config();
 const port: number = process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT) : 8000
 const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
-const origins: any = process.env.ORIGINS || []
+const origins: any = process.env.ORIGINS || ''
 
 
 const allowlist = origins.split(',')
