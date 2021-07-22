@@ -33,7 +33,7 @@ export default class SessionController
             if (user.toJSON().userType !== 'therapist') {
                 return res.sendStatus(404)
             }
-            const sessions = await sessionService.getSessionsForUser(parseInt(req.params.userId), 'therapist')
+            const sessions = await sessionService.getSessionsForUser(parseInt(req.params.userId), 'therapist', req.query.userId)
             return res.status(200).json(sessions)
         } catch (err) {
             next(err)
@@ -51,7 +51,7 @@ export default class SessionController
             if (user.toJSON().userType !== 'patient') {
                 return res.sendStatus(404)
             }
-            const sessions = await sessionService.getSessionsForUser(parseInt(req.params.userId), 'patient')
+            const sessions = await sessionService.getSessionsForUser(parseInt(req.params.userId), 'patient', req.query.therapist)
             return res.status(200).json(sessions)
         } catch (err) {
             next(err)
@@ -81,6 +81,19 @@ export default class SessionController
             }
             const updatedSession = await sessionService.updateStatus(req.body.status, id)
             return res.status(200).json(updatedSession)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    public static async getSingleSession(req:Request, res:Response, next:NextFunction) {
+        try {
+            const id = parseInt(req.params.id)
+            const session = await sessionService.sessionExists(id)
+            if (session === false) {
+                return res.sendStatus(404)
+            }
+            return res.status(200).json(session)
         } catch (err) {
             next(err)
         }

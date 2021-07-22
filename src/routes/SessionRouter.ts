@@ -9,5 +9,6 @@ router.get('/patient/:userId', authenticateToken, SessionController.getSessionsF
 router.post('/', authenticateToken, validateAddSession, SessionController.addSession)
 router.delete('/:id', authenticateToken, SessionController.deleteSession)
 router.patch('/:id/status', authenticateToken, validateUpdateSessionStatus, SessionController.updateStatus)
+router.get('/:id', authenticateToken, SessionController.getSingleSession)
 
 export default router

@@ -9,11 +9,14 @@ import AvailabilityRouter from "./routes/AvailabilityRouter"
 import InviteCodeRouter from "./routes/InviteCodeRouter"
 import { ErrorHandler, handleError } from "./error";
 import cors from 'cors'
+import { ExpressPeerServer } from 'peer'
+import { Server } from 'socket.io';
+import http from 'http'
 
 
 // initialize configuration
 dotenv.config();
-const port: string | number = process.env.SERVER_PORT || 8000;
+const port: number = process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT) : 8000
 const baseUrl: string = process.env.BASE_URL || "http://localhost"
 const app: Application = express();
 const origins: any = process.env.ORIGINS || []
@@ -30,7 +33,6 @@ const corsOptionsDelegate = (req: Request, callback: CallableFunction) => {
   }
   callback(null, corsOptions)
 }
-
 
 app.use(cookieParser())
 app.use(express.json())
@@ -53,8 +55,54 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
     console.error('Unable to connect to the database:', error);
   }
 
-  app.listen( port, () => {
+  const server = http.createServer(app);
+  const ioServer = new Server( server, {
+    cors: {
+      origin: allowlist,
+      methods: ["GET", "POST"]
+    },
+  } );
+
+  ioServer.on('connection', (socket) => {
+    console.log('USER CONNECTED', socket.id)
+  
+
+    socket.on("join-room", (roomId, userId, username) => {
+      console.log('Client joined room! ', roomId, username);
+      socket.join(roomId);
+      socket.to(roomId).emit("user-connected", userId, roomId, username);
+    });
+
+    socket.on("send-message", (roomId, userId, message) => {
+      console.log('A message was sent', message);
+      socket.join(roomId);
+      socket.broadcast.emit("message", userId, message);
+      }
+    )
+
+    socket.on("disconnect", () => {
+      console.log('DISCONNECTION');
+    });
+  });
+
+
+  const serverListening = server.listen( port, () => {
     console.log( `server started at ${ baseUrl }:${ port }` );
   } );
+
+  const peerServer = ExpressPeerServer( serverListening );
+  app.use('/chat', peerServer);
+
+  
+  peerServer.on('connection', (client) => {
+    console.log(client.getId(), 'Client Connected!')
+  });
+
+  peerServer.on('disconnect', (client) => {
+    console.log(client.getId(), 'Client Disconnected!')
+  });
+
 }) ()
+
+
 

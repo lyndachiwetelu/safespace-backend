@@ -7,6 +7,7 @@ const env: string = process.env.ENVIRONMENT || 'development'
 const connectionConfig = config[env]
 
 export const sequelize = new Sequelize({
+  logging: false,
   database: connectionConfig.database,
   dialect: 'postgres',
   username: connectionConfig.username,
