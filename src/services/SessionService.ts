@@ -1,4 +1,5 @@
 import { Op } from "sequelize"
+import { IsNull } from "sequelize-typescript"
 import { ErrorHandler } from "../error"
 import TherapistSetting from "../models/TherapistSetting"
 import TherapistSettingModel from "../models/TherapistSetting"
@@ -48,14 +49,21 @@ export default class SessionService
         }
     }
 
-    public async getSessionsForUser(userId: number, userType:string = 'patient'): Promise<any> {
+    public async getSessionsForUser(userId: number, userType:string = 'patient', filterId: any = null): Promise<any> {
        try {
-            let where = {}
+            let where: any = {}
             if (userType === 'patient') {
                 where = { requestedBy: userId}
+                if (filterId && filterId > 0) {
+                    where.therapist = filterId
+                }
             } else if (userType === 'therapist') {
                 where = { therapist:userId}
+                if (filterId && filterId > 0) {
+                    where.requestedBy = filterId
+                }
             }
+            
             const sessions = await this.sessionModel.findAll({ where, include: [{model: User, as:'user'}, {model: User, as:'therapistInfo', include: [TherapistSetting]} ] })
             return sessions.map(session => {
                 const sessionJson = session.toJSON()
