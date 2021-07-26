@@ -74,7 +74,7 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
     });
 
     socket.on("call-ended", (data:any) => {
-      console.log('Call in room ended! ', data.rooom);
+      console.log('Call in room ended! ', data.room);
       socket.join(data.room);
       socket.to(data.room).emit("call-has-ended");
     });
