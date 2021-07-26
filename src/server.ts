@@ -12,6 +12,7 @@ import cors from 'cors'
 import { ExpressPeerServer } from 'peer'
 import { Server } from 'socket.io';
 import http from 'http'
+import fs from 'fs'
 
 
 // initialize configuration
@@ -64,8 +65,7 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
   } );
 
   ioServer.on('connection', (socket) => {
-    console.log('USER CONNECTED', socket.id)
-  
+    console.log('USER CONNECTED', socket.client.conn.remoteAddress)
 
     socket.on("join-room", (roomId, userId, username) => {
       console.log('Client joined room! ', roomId, username);
@@ -81,6 +81,7 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
     )
 
     socket.on("disconnect", () => {
+      socket.removeAllListeners();
       console.log('DISCONNECTION');
     });
   });
@@ -90,7 +91,17 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
     console.log( `server started at ${ baseUrl }:${ port }` );
   } );
 
-  const peerServer = ExpressPeerServer( serverListening );
+  let options = { key: '', cert: ''}
+  if (process.env.SSL_CERT && process.env.SSL_KEY) {
+    options = {
+      key: fs.readFileSync(process.env.SSL_KEY || '').toString(),
+      cert: fs.readFileSync(process.env.SSL_CERT || '').toString(),
+    } 
+  }
+  const peerServer = ExpressPeerServer( serverListening, {
+    proxied: process.env.ENVIRONMENT === 'production' ? true : false,
+    ssl: options
+  } );
   app.use('/chat', peerServer);
 
   
