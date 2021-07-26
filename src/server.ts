@@ -73,6 +73,18 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
       socket.to(roomId).emit("user-connected", userId, roomId, username);
     });
 
+    socket.on("call-ended", (data:any) => {
+      console.log('Call in room ended! ', data.rooom);
+      socket.join(data.room);
+      socket.to(data.room).emit("call-has-ended");
+    });
+
+    socket.on("user-disconnected", (data:any) => {
+      console.log('Peer Client disconnected:', data.id);
+      socket.join(data.room);
+      socket.to(data.room).emit("peer-disconnected", data.id);
+    });
+
     socket.on("send-message", (roomId, userId, message) => {
       console.log('A message was sent', message);
       socket.join(roomId);
