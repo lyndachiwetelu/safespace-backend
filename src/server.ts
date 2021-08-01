@@ -73,10 +73,16 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
       socket.to(roomId).emit("user-connected", userId, roomId, username);
     });
 
-    socket.on("call-ended", (data:any) => {
-      console.log('Call in room ended! ', data.room);
+    socket.on("user-left-video-call", (data:any) => {
+      console.log('User left the video call in room: ', data.room);
       socket.join(data.room);
-      socket.to(data.room).emit("call-has-ended");
+      socket.to(data.room).emit("user-left-the-video-call");
+    });
+
+    socket.on("user-left-voice-call", (data:any) => {
+      console.log('User left the voice call in room: ', data.room);
+      socket.join(data.room);
+      socket.to(data.room).emit("user-left-the-voice-call");
     });
 
     socket.on("user-disconnected", (data:any) => {
