@@ -1,5 +1,4 @@
 import Joi from 'joi'
-import JoiDate from '@joi/date'
 
 export const AddSessionSchema = Joi.object({
     from: Joi.string()
