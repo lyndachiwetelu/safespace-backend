@@ -39,14 +39,19 @@ export default class SessionController
     }
 
     public static async getSessionMessages(req:Request, res:Response, next:NextFunction) {
-        const id = parseInt(req.params.id)
-        const session = await sessionService.sessionExists(id)
-        if (session === false) {
-            return res.sendStatus(404)
-        }
+        try {
+            const id = parseInt(req.params.id)
+            const session = await sessionService.sessionExists(id)
+            if (session === false) {
+                return res.sendStatus(404)
+            }
 
-        const messages = await sessionMessageService.getSessionMessages(id)
-        return res.status(200).json(messages)
+            const messages = await sessionMessageService.getSessionMessages(id)
+            return res.status(200).json(messages)
+
+        } catch (err) {
+            next(err)
+        }
     }
 
     public static async addSession(req:Request, res:Response, next:NextFunction) {
@@ -64,7 +69,7 @@ export default class SessionController
            next(err)
        }
     }
-    
+
     public static async getSessionsForTherapist(req:Request, res:Response, next:NextFunction) {
         try {
             const user = await userService.userExists('', '', req.params.userId) 
