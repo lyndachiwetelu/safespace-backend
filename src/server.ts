@@ -128,7 +128,9 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
   });
 
   peerServer.on('disconnect', (client) => {
-    console.log(client.getId(), 'Client Disconnected!')
+    const room = client.getId().split('_')[1]
+    ioServer.in(room).emit('peer-disconnected', client.getId())
+    console.log(client.getId(), room, 'Client Disconnected!')
   });
 
 }) ()

@@ -1,5 +1,4 @@
 import { Op } from "sequelize"
-import { IsNull } from "sequelize-typescript"
 import { ErrorHandler } from "../error"
 import TherapistSetting from "../models/TherapistSetting"
 import TherapistSettingModel from "../models/TherapistSetting"
