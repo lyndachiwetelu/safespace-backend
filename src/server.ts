@@ -67,10 +67,10 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
   ioServer.on('connection', (socket) => {
     console.log('USER CONNECTED', socket.client.conn.remoteAddress)
 
-    socket.on("join-room", (roomId, userId, username) => {
-      console.log('Client joined room! ', roomId, username);
-      socket.join(roomId);
-      socket.to(roomId).emit("user-connected", userId, roomId, username);
+    socket.on("join-room", (data:any) => {
+      console.log('Client joined room! ', data.userId, data.roomId, data.username);
+      socket.join(data.roomId);
+      socket.to(data.roomId).emit("user-connected", data.userId, data.roomId, data.username);
     });
 
     socket.on("user-left-video-call", (data:any) => {
@@ -91,7 +91,7 @@ app.use((err: ErrorHandler, req: Request, res: Response, next: NextFunction) => 
       socket.to(data.room).emit("peer-disconnected", data.id);
     });
 
-    socket.on("send-message", (roomId, userId, message) => {
+    socket.on("send-message", (roomId:any, userId:any, message:any) => {
       console.log('A message was sent', message);
       socket.join(roomId);
       socket.broadcast.emit("message", userId, message);
