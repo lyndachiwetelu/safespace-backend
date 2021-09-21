@@ -30,7 +30,7 @@ export default class UserController
     public static async createUser(req:Request, res:Response, next: NextFunction) : Promise<Response | void> {
         try {
             if (await userService.userExists(req.body.email) !== false) {
-                return res.status(409).json({status: 409, message: 'User  with email exists!'})
+                return res.status(409).json({status: 409, error: {message: 'User  with email exists!'} })
             }
             const {token, ...user} = await userService.createUser(req.body)
             return res.status(201).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true}).json(user);
@@ -43,10 +43,13 @@ export default class UserController
         try {
             const response = await userService.loginUser(req.body)
             if (response === null) {
-                return res.status(400).json({status: 400, message: 'Invalid Credentials'})
+                console.log('User does not exist')
+                // return res.status(400).json({status: 400, message: 'Invalid Credentials'})
+                return res.status(400).json({status: 400,  error: {message: 'Invalid Credentials'}  })
             }
 
             const {token, userData}  = response
+            console.log("User logged in")
             return res.status(200).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true }).json(userData);
 
         } catch (err) {
@@ -62,7 +65,7 @@ export default class UserController
             }
             const setting = await userService.getSetting(userId)
             if (setting === null) {
-                return res.status(404).json({status: 'error', message: 'Setting does not exist'})
+                return res.status(404).json({status: 'error', error:{ message: 'Setting does not exist' }})
             }
             return res.status(200).json(setting)
 

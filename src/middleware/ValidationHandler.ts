@@ -5,8 +5,8 @@ export const validationHandler = (schema: any, req: Request, res: Response, next
     if (error) {
         const messages = error.details.map((detail:any) => detail.message)
         return res.status(400).send({
-            status: 400,
-            messages
+            errors: messages,
+            status: 400
           });
     }
 
