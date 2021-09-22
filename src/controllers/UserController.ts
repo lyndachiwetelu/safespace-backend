@@ -33,6 +33,9 @@ export default class UserController
                 return res.status(409).json({status: 409, error: {message: 'User  with email exists!'} })
             }
             const {token, ...user} = await userService.createUser(req.body)
+            if (req.headers.mobile) {
+                return res.status(201).json({token, user})
+            }
             return res.status(201).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true}).json(user);
         } catch(err) {
             next(err)
@@ -43,13 +46,13 @@ export default class UserController
         try {
             const response = await userService.loginUser(req.body)
             if (response === null) {
-                console.log('User does not exist')
-                // return res.status(400).json({status: 400, message: 'Invalid Credentials'})
                 return res.status(400).json({status: 400,  error: {message: 'Invalid Credentials'}  })
             }
 
             const {token, userData}  = response
-            console.log("User logged in")
+            if (req.headers.mobile) {
+                return res.status(201).json({token, user:userData})
+            }
             return res.status(200).cookie('access_token', token, { maxAge:  4 * 60 * 60 * 1000, httpOnly: true }).json(userData);
 
         } catch (err) {
