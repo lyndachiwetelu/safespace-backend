@@ -71,13 +71,30 @@ export default class TherapistService
                 } 
             });
     
-            return therapists.map(therapist => {
+            const updateTherapists = therapists.map(async (therapist) => {
                 const therapistJson = therapist.toJSON()
+                const tAilments = await this.userAilmentModel.findAll({where: {userId: therapistJson.id}})
+                const tMedia = await this.userMediaModel.findAll({where: {userId: therapistJson.id}})
+
                 const { email, password, createdAt, updatedAt, media, ailments, ...otherTherapistDetails } = therapistJson
                 const {id, userId, ...otherSettings} = otherTherapistDetails.therapistSetting
                 otherTherapistDetails.therapistSetting = otherSettings
+                otherTherapistDetails.media = tMedia.map((medium: any) => {
+                    medium = medium.toJSON()
+                    const mediaName = getMediaName(medium.mediaKey)
+                    medium.name = mediaName
+                    return medium
+                })
+                otherTherapistDetails.ailments = tAilments.map((ailment: any) => {
+                    ailment = ailment.toJSON()
+                    const ailmentName = getAilmentName(ailment.ailmentKey)
+                    ailment.name = ailmentName
+                    return ailment
+                })
                 return otherTherapistDetails
             })
+
+            return await Promise.all(updateTherapists)
 
         } catch (err) {
             return new ErrorHandler(500, 'Internal Server Error')
